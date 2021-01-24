@@ -9,10 +9,11 @@ namespace Pizza.Data
             PartitionKey = "crust";
         }
         
-        public CrustEntity(string id, string name, decimal price, int stockCount) : this()
+        public CrustEntity(string id, string name, int size, decimal price, int stockCount) : this()
         {
             Id = id;
             Name = name;
+            Size = size;
             Price = price;
             StockCount = stockCount;
         }

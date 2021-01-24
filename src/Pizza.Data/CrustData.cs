@@ -36,11 +36,11 @@ namespace Pizza.Data
             }
         }
 
-        public async Task AddAsync(string id, string name, decimal price, int stockCount)
+        public async Task AddAsync(string id, string name, int size, decimal price, int stockCount)
         {
             try
             {
-                var entity = new CrustEntity(id, name, price, stockCount);
+                var entity = new CrustEntity(id, name, size, price, stockCount);
                 var insert = TableOperation.Insert(entity);
                 await _table.ExecuteAsync(insert);
             }
