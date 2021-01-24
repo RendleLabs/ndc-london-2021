@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Pizza.Data
 {
-    public class CrustData
+    public class CrustData : ICrustData
     {
         private readonly ILogger<CrustData> _log;
         private const string TableName = "crusts";
