@@ -25,6 +25,7 @@ namespace Orders.PubSub
         {
             var message = new OrderMessage
             {
+                CrustId = crustId,
                 ToppingIds = toppingIds.ToArray(),
                 Time = time
             }.ToBytes();

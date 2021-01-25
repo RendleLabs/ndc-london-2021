@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using Orders.PubSub;
 
 namespace Orders.Services
@@ -10,11 +11,15 @@ namespace Orders.Services
     {
         private readonly IngredientsService.IngredientsServiceClient _ingredients;
         private readonly IOrderPublisher _orderPublisher;
+        private readonly IOrderMessages _orderMessages;
+        private readonly ILogger<OrdersImpl> _logger;
 
-        public OrdersImpl(IngredientsService.IngredientsServiceClient ingredients, IOrderPublisher orderPublisher)
+        public OrdersImpl(IngredientsService.IngredientsServiceClient ingredients, IOrderPublisher orderPublisher, IOrderMessages orderMessages, ILogger<OrdersImpl> logger)
         {
             _ingredients = ingredients;
             _orderPublisher = orderPublisher;
+            _orderMessages = orderMessages;
+            _logger = logger;
         }
 
         public override async Task<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request, ServerCallContext context)
@@ -31,6 +36,30 @@ namespace Orders.Services
             {
                 Time = now.ToTimestamp()
             };
+        }
+
+        public override async Task Subscribe(SubscribeRequest request, IServerStreamWriter<SubscribeResponse> responseStream, ServerCallContext context)
+        {
+            var cancellationToken = context.CancellationToken;
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var orderMessage = await _orderMessages.ReadAsync(cancellationToken);
+                    var response = new SubscribeResponse
+                    {
+                        CrustId = orderMessage.CrustId,
+                        ToppingIds = { orderMessage.ToppingIds },
+                        Time = orderMessage.Time.ToTimestamp()
+                    };
+                    await responseStream.WriteAsync(response);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Subscriber disconnected.");
+                    break;
+                }
+            }
         }
 
         private async Task DecrementToppings(PlaceOrderRequest request)
