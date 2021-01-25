@@ -21,7 +21,7 @@ namespace Orders.PubSub
             _sub = _redis.GetSubscriber();
         }
 
-        public async Task PublishOrder(IEnumerable<string> toppingIds, DateTimeOffset time)
+        public async Task PublishOrder(string crustId, IEnumerable<string> toppingIds, DateTimeOffset time)
         {
             var message = new OrderMessage
             {

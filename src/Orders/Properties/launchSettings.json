@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "Orders": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:5003",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Service__Ingredients__https__Host": "localhost",
+        "Service__Ingredients__https__Port": "5002",
+        "Service__Ingredients__https__Protocol": "https"
+      }
+    }
+  }
+}

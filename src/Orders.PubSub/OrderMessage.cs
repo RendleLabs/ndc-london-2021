@@ -6,8 +6,9 @@ namespace Orders.PubSub
     [MessagePackObject]
     public class OrderMessage
     {
-        [Key(0)] public string[] ToppingIds { get; set; }
-        [Key(1)] public DateTimeOffset Time { get; set; }
+        [Key(0)] public string CrustId { get; set; }
+        [Key(1)] public string[] ToppingIds { get; set; }
+        [Key(2)] public DateTimeOffset Time { get; set; }
 
         public byte[] ToBytes() =>
             MessagePackSerializer.Serialize(this);

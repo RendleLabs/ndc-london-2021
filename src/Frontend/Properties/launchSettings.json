@@ -8,7 +8,10 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Service__Ingredients__https__Host": "localhost",
         "Service__Ingredients__https__Port": "5002",
-        "Service__Ingredients__https__Protocol": "https"
+        "Service__Ingredients__https__Protocol": "https",
+        "Service__Orders__https__Host": "localhost",
+        "Service__Orders__https__Port": "5003",
+        "Service__Orders__https__Protocol": "https"
       }
     }
   }
