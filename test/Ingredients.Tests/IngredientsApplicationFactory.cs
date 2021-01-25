@@ -26,17 +26,31 @@ namespace Ingredients.Tests
             {
                 services.RemoveAll<IToppingData>();
 
-                var list = new List<ToppingEntity>
+                var toppingEntities = new List<ToppingEntity>
                 {
                     new("cheese", "Cheese", 0.5m, 50),
                     new("sauce", "Sauce", 0.5m, 50),
                 };
 
-                var sub = Substitute.For<IToppingData>();
-                sub.GetAsync(Arg.Any<CancellationToken>())
-                    .Returns(Task.FromResult(list));
+                var toppingDataSub = Substitute.For<IToppingData>();
+                toppingDataSub.GetAsync(Arg.Any<CancellationToken>())
+                    .Returns(Task.FromResult(toppingEntities));
                 
-                services.AddSingleton(sub);
+                services.AddSingleton(toppingDataSub);
+
+                services.RemoveAll<ICrustData>();
+
+                var crustEntities = new List<CrustEntity>
+                {
+                    new("thin", "Thin", 9, 5m, 50),
+                    new("deep", "Deep", 9, 5m, 50),
+                };
+
+                var crustDataSub = Substitute.For<ICrustData>();
+                crustDataSub.GetAsync(Arg.Any<CancellationToken>())
+                    .Returns(Task.FromResult(crustEntities));
+
+                services.AddSingleton(crustDataSub);
             });
         }
     }

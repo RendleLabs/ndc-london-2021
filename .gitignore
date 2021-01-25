@@ -354,3 +354,5 @@ MigrationBackup/
 
 # Jetbrains Rider
 .idea/
+
+.tye/
