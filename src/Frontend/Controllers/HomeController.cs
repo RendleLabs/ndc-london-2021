@@ -25,12 +25,12 @@ namespace Frontend.Controllers
         {
             var toppingsResponse = await _client.GetToppingsAsync(new GetToppingsRequest());
             var toppings = toppingsResponse.Toppings
-                .Select(t => new ToppingViewModel(t.Topping.Id, t.Topping.Name, (decimal) t.Topping.Price))
+                .Select(t => new ToppingViewModel(t.Topping.Id, t.Topping.Name, t.Topping.Price))
                 .ToList();
 
             var crustsResponse = await _client.GetCrustsAsync(new GetCrustsRequest());
             var crusts = crustsResponse.Crusts
-                .Select(c => new CrustViewModel(c.Crust.Id, c.Crust.Name, c.Crust.Size, (decimal) c.Crust.Price))
+                .Select(c => new CrustViewModel(c.Crust.Id, c.Crust.Name, c.Crust.Size, c.Crust.Price))
                 .ToList();
             
             var viewModel = new HomeViewModel(toppings, crusts);
