@@ -35,7 +35,7 @@ namespace Ingredients.Services
             {
                 Toppings = {availableToppings}
             };
-
+            
             return response;
         }
 
@@ -43,7 +43,7 @@ namespace Ingredients.Services
         {
             var crusts = await _crustData.GetAsync(context.CancellationToken);
             var availableCrusts = crusts.Select(t =>
-                new AvailableCrust()
+                new AvailableCrust
                 {
                     Quantity = t.StockCount,
                     Crust = new Crust
