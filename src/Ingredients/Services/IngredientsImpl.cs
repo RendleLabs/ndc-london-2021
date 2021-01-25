@@ -5,7 +5,7 @@ using Pizza.Data;
 
 namespace Ingredients.Services
 {
-    public class IngredientsImpl : IngredientsService.IngredientsServiceBase
+    internal class IngredientsImpl : IngredientsService.IngredientsServiceBase
     {
         private readonly IToppingData _data;
 
