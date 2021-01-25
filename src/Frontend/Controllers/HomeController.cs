@@ -11,21 +11,24 @@ namespace Frontend.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IngredientsService.IngredientsServiceClient _client;
         private readonly ILogger<HomeController> _log;
 
-        public HomeController(ILogger<HomeController> log)
+        public HomeController(IngredientsService.IngredientsServiceClient client, ILogger<HomeController> log)
         {
+            _client = client;
             _log = log;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
-            var toppings = new List<ToppingViewModel>
-            {
-                new("cheese", "Cheese", 1m),
-                new("tomatosauce", "Tomato Sauce", 0.5m),
-            };
+            var toppingsResponse = await _client.GetToppingsAsync(new GetToppingsRequest());
+            var toppings = toppingsResponse.Toppings
+                .Select(t => new ToppingViewModel(t.Topping.Id, t.Topping.Name,
+                    (decimal) t.Topping.Price))
+                .ToList();
+            
             var crusts = new List<CrustViewModel>
             {
                 new("thin9", "Thin", 9, 5m),
