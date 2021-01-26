@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AuthHelp;
@@ -23,11 +24,19 @@ namespace Orders
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient("ingredients")
+                .ConfigurePrimaryHttpMessageHandler(DevelopmentModeCertificateHelper.CreateClientHandler);
+
             services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) =>
-            {
-                var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Ingredients", "https");
-            });
+                {
+                    var config = provider.GetRequiredService<IConfiguration>();
+                    options.Address = config.GetServiceUri("Ingredients", "https");
+                })
+                .ConfigureChannel((provider, channel) =>
+                {
+                    channel.HttpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("ingredients");
+                    channel.DisposeHttpClient = true;
+                });
 
             services.AddOrderPubSub();
             services.AddGrpc();
@@ -75,10 +84,12 @@ namespace Orders
                 endpoints.MapGet("/generateJwtToken", context =>
                     context.Response.WriteAsync(JwtHelper.GenerateJwtToken(context.Request.Query["name"])));
 
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                });
+                endpoints.MapGet("/",
+                    async context =>
+                    {
+                        await context.Response.WriteAsync(
+                            "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                    });
             });
         }
     }

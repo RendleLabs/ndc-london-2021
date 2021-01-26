@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Microsoft.AspNetCore.Authorization;
 using Pizza.Data;
 
 namespace Ingredients.Services
 {
+    [Authorize]
     internal class IngredientsImpl : IngredientsService.IngredientsServiceBase
     {
         private readonly IToppingData _toppingData;

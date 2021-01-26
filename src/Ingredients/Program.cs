@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthHelp;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Hosting;
 
 namespace Ingredients
@@ -22,6 +24,19 @@ namespace Ingredients
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.ConfigureHttpsDefaults(defaults =>
+                        {
+                            var serverCert = ServerCert.Get();
+                            defaults.ServerCertificate = serverCert;
+                            defaults.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+                            defaults.ClientCertificateValidation =
+                                (clientCert, _, _) =>
+                                    clientCert.Issuer == serverCert.Issuer;
+                        });
+                    });
                 });
     }
 }

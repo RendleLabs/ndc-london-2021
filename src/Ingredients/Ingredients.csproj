@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuthHelp\AuthHelp.csproj" />
     <ProjectReference Include="..\Pizza.Data\Pizza.Data.csproj" />
   </ItemGroup>
 
