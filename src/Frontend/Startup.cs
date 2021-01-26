@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Frontend.Auth;
+using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,18 +27,36 @@ namespace Frontend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<AuthHelper>()
+                .ConfigureHttpClient((provider, client) =>
+                {
+                    var config = provider.GetRequiredService<IConfiguration>();
+                    client.BaseAddress = config.GetServiceUri("Orders", "https");
+                    client.DefaultRequestVersion = new Version(2, 0);
+                });
+
             services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 options.Address = config.GetServiceUri("Ingredients", "https");
             });
-            
+
             services.AddGrpcClient<OrdersService.OrdersServiceClient>((provider, options) =>
-            {
-                var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Orders", "https");
-            });
-            
+                {
+                    var config = provider.GetRequiredService<IConfiguration>();
+                    options.Address = config.GetServiceUri("Orders", "https");
+                })
+                .ConfigureChannel((provider, channel) =>
+                {
+                    var authHelper = provider.GetRequiredService<AuthHelper>();
+                    var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+                    {
+                        var token = await authHelper.GetTokenAsync();
+                        metadata.Add("Authorization", $"Bearer {token}");
+                    });
+                    channel.Credentials = ChannelCredentials.Create(new SslCredentials(), credentials);
+                });
+
             services.AddControllersWithViews();
         }
 
@@ -53,15 +73,13 @@ namespace Frontend
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
