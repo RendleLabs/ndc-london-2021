@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -9,6 +10,8 @@ namespace Orders.Services
 {
     public class OrdersImpl : OrdersService.OrdersServiceBase
     {
+        private static readonly ActivitySource ActSource = new("Orders");
+        
         private readonly IngredientsService.IngredientsServiceClient _ingredients;
         private readonly IOrderPublisher _orderPublisher;
         private readonly IOrderMessages _orderMessages;
@@ -25,6 +28,11 @@ namespace Orders.Services
         public override async Task<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request, ServerCallContext context)
         {
             var now = DateTimeOffset.UtcNow;
+
+            using var activity = ActSource.StartActivity("PlaceOrder");
+
+            activity?.SetTag("crust", request.CrustId);
+            activity?.SetTag("toppings", string.Join(", ", request.ToppingIds));
 
             await _orderPublisher.PublishOrder(request.CrustId, request.ToppingIds, now);
             

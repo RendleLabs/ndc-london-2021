@@ -10,7 +10,7 @@ namespace JaegerTracing
 {
     public static class OpenTelemetryServiceExtensions
     {
-        public static IServiceCollection AddJaegerTracing(this IServiceCollection services)
+        public static IServiceCollection AddJaegerTracing(this IServiceCollection services, params string[] sources)
         {
             services.AddOpenTelemetryTracing((provider, builder) =>
             {
@@ -26,6 +26,11 @@ namespace JaegerTracing
                         .AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
                         .AddGrpcClientInstrumentation();
+
+                    if (sources.Length > 0)
+                    {
+                        builder.AddSource(sources);
+                    }
 
                     if (provider.GetService<IConnectionMultiplexer>() is { } c)
                     {
