@@ -28,6 +28,12 @@ spec:
           value: "true"
         - name: ASPNETCORE_URLS
           value: "http://0.0.0.0:80"
+        - name: Jaeger__ServiceName
+          value: "ingredients"
+        - name: Jaeger__Host
+          value: "jaeger-agent"
+        - name: Jaeger__Port
+          value: "6831"
 
 ---
 

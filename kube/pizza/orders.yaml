@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       run: orders
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -34,6 +34,12 @@ spec:
           value: "80"
         - name: Service__Ingredients__Protocol
           value: "http"
+        - name: Jaeger__ServiceName
+          value: "orders"
+        - name: Jaeger__Host
+          value: "jaeger-agent"
+        - name: Jaeger__Port
+          value: "6831"
 
 ---
 

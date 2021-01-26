@@ -20,4 +20,8 @@
     <PackageReference Include="Microsoft.Tye.Extensions.Configuration" Version="0.6.0-alpha.21070.5" />
   </ItemGroup>
   
+  <ItemGroup>
+    <ProjectReference Include="..\JaegerTracing\JaegerTracing.csproj" />
+  </ItemGroup>
+  
 </Project>

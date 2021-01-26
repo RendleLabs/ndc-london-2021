@@ -15,11 +15,12 @@ namespace Orders.PubSub
         private readonly OrderMessages _orderMessages;
         private readonly ILogger<OrderSubscriber> _log;
 
-        public OrderSubscriber(OrderMessages orderMessages, ILogger<OrderSubscriber> log)
+        public OrderSubscriber(OrderMessages orderMessages, ILogger<OrderSubscriber> log,
+            IConnectionMultiplexer redis)
         {
             _orderMessages = orderMessages;
             _log = log;
-            _redis = ConnectionMultiplexer.Connect(Constants.ConnectionString);
+            _redis = redis;
             _sub = _redis.GetSubscriber();
         }
 

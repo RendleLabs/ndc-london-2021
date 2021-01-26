@@ -14,10 +14,10 @@ namespace Orders.PubSub
         private readonly ISubscriber _sub;
         private readonly ILogger<OrderPublisher> _log;
 
-        public OrderPublisher(ILogger<OrderPublisher> log)
+        public OrderPublisher(ILogger<OrderPublisher> log, IConnectionMultiplexer redis)
         {
             _log = log;
-            _redis = ConnectionMultiplexer.Connect(Constants.ConnectionString);
+            _redis = redis;
             _sub = _redis.GetSubscriber();
         }
 
