@@ -6,10 +6,8 @@ option csharp_namespace = "Orders";
 
 package orders;
 
-// The greeting service definition.
 service OrdersService {
   rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
-  rpc Subscribe(SubscribeRequest) returns (stream SubscribeResponse);
 }
 
 message PlaceOrderRequest {
