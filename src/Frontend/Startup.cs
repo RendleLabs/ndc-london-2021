@@ -28,13 +28,13 @@ namespace Frontend
             services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Ingredients", "https");
+                options.Address = config.GetServiceUri("Ingredients");
             });
             
             services.AddGrpcClient<OrdersService.OrdersServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Orders", "https");
+                options.Address = config.GetServiceUri("Orders");
             });
             
             services.AddControllersWithViews();

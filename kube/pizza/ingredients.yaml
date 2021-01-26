@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: ingredients
   namespace: pizza
 spec:
   selector:
     matchLabels:
-      run: frontend
+      run: ingredients
   replicas: 1
   template:
     metadata:
       labels:
-        run: frontend
+        run: ingredients
     spec:
       containers:
-      - name: frontend
-        image: pizza/frontend:latest
+      - name: ingredients
+        image: pizza/ingredients:latest
         imagePullPolicy: Never
         resources:
           limits:
@@ -28,30 +28,16 @@ spec:
           value: "true"
         - name: ASPNETCORE_URLS
           value: "http://0.0.0.0:80"
-        - name: Service__Ingredients__Host
-          value: "ingredients"
-        - name: Service__Ingredients__Port
-          value: "80"
-        - name: Service__Ingredients__Protocol
-          value: "http"
-        - name: Service__Orders__Host
-          value: "orders"
-        - name: Service__Orders__Port
-          value: "80"
-        - name: Service__Orders__Protocol
-          value: "http"
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: ingredients
   namespace: pizza
 spec:
-  type: NodePort
   ports:
   - port: 80
-    nodePort: 30001
   selector:
-    run: frontend
+    run: ingredients
